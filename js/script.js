@@ -57,9 +57,6 @@ class ProjectManager {
 
         const isExpanded = description.classList.contains('expanded');
         
-        // Close all other descriptions first
-        this.closeAllDescriptions();
-        
         if (!isExpanded) {
             description.classList.add('expanded');
             if (projectId === 'research') {
@@ -70,7 +67,7 @@ class ProjectManager {
         } else {
             description.classList.remove('expanded');
             if (projectId === 'research') {
-                button.innerHTML = 'Abstract';
+                button.innerHTML = '<i class="fas fa-info-circle"></i> Abstract';
             } else {
                 button.innerHTML = '<i class="fas fa-info-circle"></i> Desc';
             }
@@ -88,7 +85,7 @@ class ProjectManager {
         buttons.forEach(btn => {
             // Check if this is the research button
             if (btn.getAttribute('data-project') === 'research') {
-                btn.innerHTML = 'Abstract';
+                btn.innerHTML = '<i class="fas fa-info-circle"></i> Abstract';
             } else {
                 btn.innerHTML = '<i class="fas fa-info-circle"></i> Desc';
             }
