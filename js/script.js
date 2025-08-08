@@ -59,14 +59,14 @@ class ProjectManager {
         
         if (!isExpanded) {
             description.classList.add('expanded');
-            if (projectId === 'research') {
+            if (projectId === 'research' || projectId === 'project1') {
                 button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide';
             } else {
                 button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide';
             }
         } else {
             description.classList.remove('expanded');
-            if (projectId === 'research') {
+            if (projectId === 'research' || projectId === 'project1') {
                 button.innerHTML = '<i class="fas fa-info-circle"></i> Abstract';
             } else {
                 button.innerHTML = '<i class="fas fa-info-circle"></i> Desc';
@@ -84,7 +84,7 @@ class ProjectManager {
         
         buttons.forEach(btn => {
             // Check if this is the research button
-            if (btn.getAttribute('data-project') === 'research') {
+            if (btn.getAttribute('data-project') === 'research' || btn.getAttribute('data-project') === 'project1') {
                 btn.innerHTML = '<i class="fas fa-info-circle"></i> Abstract';
             } else {
                 btn.innerHTML = '<i class="fas fa-info-circle"></i> Desc';
@@ -285,6 +285,64 @@ class ErrorHandler {
     }
 }
 
+// File Modal Management
+class FileModalManager {
+    constructor() {
+        this.modal = document.getElementById('fileModal');
+        this.fileViewer = document.getElementById('fileViewer');
+        this.closeBtn = document.querySelector('.close');
+        this.init();
+    }
+
+    init() {
+        // Close modal when clicking X
+        this.closeBtn.addEventListener('click', () => this.closeModal());
+        
+        // Close modal when clicking outside
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.modal.style.display === 'block') {
+                this.closeModal();
+            }
+        });
+
+        // Add event listeners to file buttons
+        document.querySelectorAll('[data-file]').forEach(button => {
+            button.addEventListener('click', (e) => this.openFile(e));
+        });
+    }
+
+    openFile(event) {
+        const button = event.currentTarget;
+        const fileName = button.getAttribute('data-file');
+        const fileType = button.getAttribute('data-type');
+        
+        // Clear previous content
+        this.fileViewer.innerHTML = '';
+        if (fileType === 'paper' || fileType === 'poster') {
+            // For PDF files, use the iframe src
+            this.fileViewer.src = fileName;
+        }
+        
+        // Show the modal
+        this.modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    closeModal() {
+        this.modal.style.display = 'none';
+        this.fileViewer.src = ''; // Clear the iframe
+        this.fileViewer.innerHTML = ''; // Clear any content
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+}
+
 // Initialize all managers when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize all managers
@@ -294,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new AccessibilityManager();
     new AnalyticsManager();
     new ErrorHandler();
+    new FileModalManager();
 
     // Add loading animation
     document.body.classList.add('loaded');
